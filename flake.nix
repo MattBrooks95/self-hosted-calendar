@@ -28,7 +28,7 @@
         type = "app";
         program = "${self.packages.${system}.default}/bin/calendar";
       };
-      devShell = (with pkgs; mkShell {
+      devShells.${system} = (with pkgs; mkShell {
         buildInputs = [
           elmPackages.elm
           elmPackages.elm-language-server
