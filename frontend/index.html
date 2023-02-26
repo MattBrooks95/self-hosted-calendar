@@ -5270,9 +5270,114 @@ var $author$project$App$update = F2(
 		}
 	});
 var $elm$html$Html$b = _VirtualDom_node('b');
+var $author$project$CreateEvent$Date = function (a) {
+	return {$: 'Date', a: a};
+};
+var $author$project$CreateEvent$Feb = {$: 'Feb'};
+var $author$project$App$dummyDate = $author$project$CreateEvent$Date(
+	{day: 23, month: $author$project$CreateEvent$Feb, year: 2023});
 var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
 var $elm$html$Html$ul = _VirtualDom_node('ul');
+var $author$project$CreateEvent$fromNothing = F2(
+	function (defVal, maybeString) {
+		if (maybeString.$ === 'Nothing') {
+			return defVal;
+		} else {
+			var x = maybeString.a;
+			return x;
+		}
+	});
+var $author$project$CreateEvent$defaultToBlank = $author$project$CreateEvent$fromNothing('');
+var $elm$html$Html$div = _VirtualDom_node('div');
+var $elm$core$String$concat = function (strings) {
+	return A2($elm$core$String$join, '', strings);
+};
+var $elm$core$List$intersperse = F2(
+	function (sep, xs) {
+		if (!xs.b) {
+			return _List_Nil;
+		} else {
+			var hd = xs.a;
+			var tl = xs.b;
+			var step = F2(
+				function (x, rest) {
+					return A2(
+						$elm$core$List$cons,
+						sep,
+						A2($elm$core$List$cons, x, rest));
+				});
+			var spersed = A3($elm$core$List$foldr, step, _List_Nil, tl);
+			return A2($elm$core$List$cons, hd, spersed);
+		}
+	});
+var $author$project$CreateEvent$monthAsInt = function (m) {
+	switch (m.$) {
+		case 'Jan':
+			return 1;
+		case 'Feb':
+			return 2;
+		case 'Mar':
+			return 3;
+		case 'Apr':
+			return 4;
+		case 'May':
+			return 5;
+		case 'June':
+			return 6;
+		case 'July':
+			return 7;
+		case 'Aug':
+			return 8;
+		case 'Sep':
+			return 9;
+		case 'Oct':
+			return 10;
+		case 'Nov':
+			return 11;
+		default:
+			return 12;
+	}
+};
+var $author$project$CreateEvent$toString = function (_v0) {
+	var year = _v0.a.year;
+	var month = _v0.a.month;
+	var day = _v0.a.day;
+	return $elm$core$String$concat(
+		A2(
+			$elm$core$List$intersperse,
+			'-',
+			A2(
+				$elm$core$List$map,
+				$elm$core$String$fromInt,
+				_List_fromArray(
+					[
+						year,
+						$author$project$CreateEvent$monthAsInt(month),
+						day
+					]))));
+};
+var $author$project$CreateEvent$renderDate = function (date) {
+	if (date.$ === 'Nothing') {
+		return '';
+	} else {
+		var d = date.a;
+		return $author$project$CreateEvent$toString(d);
+	}
+};
+var $author$project$CreateEvent$view = F2(
+	function (date, desc) {
+		return A2(
+			$elm$html$Html$div,
+			_List_Nil,
+			_List_fromArray(
+				[
+					$elm$html$Html$text(
+					$author$project$CreateEvent$renderDate(date)),
+					$elm$html$Html$text(
+					$author$project$CreateEvent$defaultToBlank(desc))
+				]));
+	});
 var $elm$html$Html$a = _VirtualDom_node('a');
 var $elm$json$Json$Encode$string = _Json_wrap;
 var $elm$html$Html$Attributes$stringProperty = F2(
@@ -5327,7 +5432,11 @@ var $author$project$App$view = function (model) {
 					[
 						$author$project$App$viewLink('/'),
 						$author$project$App$viewLink('/addevent')
-					]))
+					])),
+				A2(
+				$author$project$CreateEvent$view,
+				$elm$core$Maybe$Just($author$project$App$dummyDate),
+				$elm$core$Maybe$Just('dummy view'))
 			]),
 		title: 'Url example'
 	};

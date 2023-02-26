@@ -6,6 +6,8 @@ import Html exposing (..)
 import Html.Attributes exposing(..)
 import Url
 
+import CreateEvent exposing(..)
+
 main : Program () Model Msg
 main = Browser.application
     { init = init
@@ -46,6 +48,9 @@ subscriptions : Model -> Sub Msg
 subscriptions _ =
     Sub.none
 
+dummyDate: Date
+dummyDate = (Date { year=2023, month=Feb, day=23})
+
 view : Model -> Browser.Document Msg
 view model = {
     title = "Url example"
@@ -56,6 +61,7 @@ view model = {
             [ viewLink "/"
             , viewLink "/addevent"
             ]
+        , CreateEvent.view (Just dummyDate) (Just "dummy view")
         ]
     }
 
