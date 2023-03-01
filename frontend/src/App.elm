@@ -25,15 +25,17 @@ type alias Model =
     { key: Nav.Key
     , url: Url.Url
     , active: Bool
+    , memo: String
     }
 
 init : () -> Url.Url -> Nav.Key -> (Model, Cmd Msg)
 init flags url key =
-    (Model key url False, Cmd.none)
+    (Model key url False "initial message", Cmd.none)
 
 type Msg = LinkClicked Browser.UrlRequest
     | UrlChanged Url.Url
     | Toggle
+    | InputMemo String
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
@@ -49,6 +51,7 @@ update msg model =
             , Cmd.none
             )
         Toggle -> ({model | active= not model.active}, Cmd.none)
+        InputMemo newMemo -> ({model | memo=newMemo}, Cmd.none)
 
 subscriptions : Model -> Sub Msg
 subscriptions _ =
@@ -71,6 +74,7 @@ view model = {
         , text (if model.active then "active" else "not active")
         --, button [onClick (update Toggle model)] [text "click me"]
         , button [onClick Toggle] [text "click me"]
+        , text model.memo
         ]
     }
 
