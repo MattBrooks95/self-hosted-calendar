@@ -40,7 +40,7 @@ type Date = Date {
 
 toString : Date -> String
 toString (Date {year, month, day}) =
-    String.concat (List.intersperse "-" (List.map String.fromInt [year, monthAsInt month, day]))
+    (String.concat << List.intersperse "-") (List.map String.fromInt [year, monthAsInt month, day])
 
 view : Maybe Date -> Maybe String -> Html msg
 view date desc =
