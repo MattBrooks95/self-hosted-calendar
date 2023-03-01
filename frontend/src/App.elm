@@ -4,6 +4,9 @@ import Browser
 import Browser.Navigation as Nav
 import Html exposing (..)
 import Html.Attributes exposing(..)
+import Html.Events exposing(
+    onClick
+    )
 import Url
 
 import CreateEvent exposing(..)
@@ -21,14 +24,16 @@ main = Browser.application
 type alias Model =
     { key: Nav.Key
     , url: Url.Url
+    , active: Bool
     }
 
 init : () -> Url.Url -> Nav.Key -> (Model, Cmd Msg)
 init flags url key =
-    (Model key url, Cmd.none)
+    (Model key url False, Cmd.none)
 
 type Msg = LinkClicked Browser.UrlRequest
     | UrlChanged Url.Url
+    | Toggle
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
@@ -43,6 +48,7 @@ update msg model =
             ( { model | url = url }
             , Cmd.none
             )
+        Toggle -> ({model | active= not model.active}, Cmd.none)
 
 subscriptions : Model -> Sub Msg
 subscriptions _ =
@@ -62,6 +68,9 @@ view model = {
             , viewLink "/addevent"
             ]
         , CreateEvent.view (Just dummyDate) (Just "dummy view")
+        , text (if model.active then "active" else "not active")
+        --, button [onClick (update Toggle model)] [text "click me"]
+        , button [onClick Toggle] [text "click me"]
         ]
     }
 

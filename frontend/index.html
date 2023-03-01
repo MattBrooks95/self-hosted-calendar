@@ -5179,16 +5179,16 @@ var $elm$core$Task$perform = F2(
 				A2($elm$core$Task$map, toMessage, task)));
 	});
 var $elm$browser$Browser$application = _Browser_application;
-var $author$project$App$Model = F2(
-	function (key, url) {
-		return {key: key, url: url};
+var $author$project$App$Model = F3(
+	function (key, url, active) {
+		return {active: active, key: key, url: url};
 	});
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
 var $author$project$App$init = F3(
 	function (flags, url, key) {
 		return _Utils_Tuple2(
-			A2($author$project$App$Model, key, url),
+			A3($author$project$App$Model, key, url, false),
 			$elm$core$Platform$Cmd$none);
 	});
 var $elm$core$Platform$Sub$batch = _Platform_batch;
@@ -5197,6 +5197,7 @@ var $author$project$App$subscriptions = function (_v0) {
 	return $elm$core$Platform$Sub$none;
 };
 var $elm$browser$Browser$Navigation$load = _Browser_load;
+var $elm$core$Basics$not = _Basics_not;
 var $elm$browser$Browser$Navigation$pushUrl = _Browser_pushUrl;
 var $elm$url$Url$addPort = F2(
 	function (maybePort, starter) {
@@ -5244,38 +5245,64 @@ var $elm$url$Url$toString = function (url) {
 };
 var $author$project$App$update = F2(
 	function (msg, model) {
-		if (msg.$ === 'LinkClicked') {
-			var urlRequest = msg.a;
-			if (urlRequest.$ === 'Internal') {
-				var url = urlRequest.a;
+		switch (msg.$) {
+			case 'LinkClicked':
+				var urlRequest = msg.a;
+				if (urlRequest.$ === 'Internal') {
+					var url = urlRequest.a;
+					return _Utils_Tuple2(
+						model,
+						A2(
+							$elm$browser$Browser$Navigation$pushUrl,
+							model.key,
+							$elm$url$Url$toString(url)));
+				} else {
+					var href = urlRequest.a;
+					return _Utils_Tuple2(
+						model,
+						$elm$browser$Browser$Navigation$load(href));
+				}
+			case 'UrlChanged':
+				var url = msg.a;
 				return _Utils_Tuple2(
-					model,
-					A2(
-						$elm$browser$Browser$Navigation$pushUrl,
-						model.key,
-						$elm$url$Url$toString(url)));
-			} else {
-				var href = urlRequest.a;
+					_Utils_update(
+						model,
+						{url: url}),
+					$elm$core$Platform$Cmd$none);
+			default:
 				return _Utils_Tuple2(
-					model,
-					$elm$browser$Browser$Navigation$load(href));
-			}
-		} else {
-			var url = msg.a;
-			return _Utils_Tuple2(
-				_Utils_update(
-					model,
-					{url: url}),
-				$elm$core$Platform$Cmd$none);
+					_Utils_update(
+						model,
+						{active: !model.active}),
+					$elm$core$Platform$Cmd$none);
 		}
 	});
+var $author$project$App$Toggle = {$: 'Toggle'};
 var $elm$html$Html$b = _VirtualDom_node('b');
+var $elm$html$Html$button = _VirtualDom_node('button');
 var $author$project$CreateEvent$Date = function (a) {
 	return {$: 'Date', a: a};
 };
 var $author$project$CreateEvent$Feb = {$: 'Feb'};
 var $author$project$App$dummyDate = $author$project$CreateEvent$Date(
 	{day: 23, month: $author$project$CreateEvent$Feb, year: 2023});
+var $elm$virtual_dom$VirtualDom$Normal = function (a) {
+	return {$: 'Normal', a: a};
+};
+var $elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
+var $elm$html$Html$Events$on = F2(
+	function (event, decoder) {
+		return A2(
+			$elm$virtual_dom$VirtualDom$on,
+			event,
+			$elm$virtual_dom$VirtualDom$Normal(decoder));
+	});
+var $elm$html$Html$Events$onClick = function (msg) {
+	return A2(
+		$elm$html$Html$Events$on,
+		'click',
+		$elm$json$Json$Decode$succeed(msg));
+};
 var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
 var $elm$html$Html$ul = _VirtualDom_node('ul');
@@ -5436,7 +5463,19 @@ var $author$project$App$view = function (model) {
 				A2(
 				$author$project$CreateEvent$view,
 				$elm$core$Maybe$Just($author$project$App$dummyDate),
-				$elm$core$Maybe$Just('dummy view'))
+				$elm$core$Maybe$Just('dummy view')),
+				$elm$html$Html$text(
+				model.active ? 'active' : 'not active'),
+				A2(
+				$elm$html$Html$button,
+				_List_fromArray(
+					[
+						$elm$html$Html$Events$onClick($author$project$App$Toggle)
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('click me')
+					]))
 			]),
 		title: 'Url example'
 	};
